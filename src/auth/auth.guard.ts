@@ -23,7 +23,7 @@ export class AuthGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
     const token = this.extractTokenFromHeader(request);
-
+    // unauthorized user
     if (!token) throw new UnauthorizedException('you must login first');
 
     try {
@@ -33,6 +33,7 @@ export class AuthGuard implements CanActivate {
 
       request.user = filterObject(payload, 'id', 'email');
     } catch {
+      // the token is expired
       throw new UnauthorizedException('the token is not valide');
     }
 
